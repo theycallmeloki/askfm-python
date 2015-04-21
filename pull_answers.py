@@ -21,7 +21,7 @@ for i in tree.xpath("//div[@id='common_question_container']/div"):
     if(asked_by == None):
         asked_by_who = "Anonymous"
     else:
-        asked_by_who = asked_by.text
+        asked_by_who = "@" + (asked_by.get('href').lstrip('/'))
     #answer
     for j in i.xpath("div[3]"):
         answer = (' '.join(j.itertext()).strip())
@@ -41,6 +41,10 @@ for i in tree.xpath("//div[@id='common_question_container']/div"):
             if(k.tag == 'a'):
                 imgTree = html.fromstring(requests.get("http://ask.fm" + k.get('href')).text)
                 img_reply_src = (imgTree.xpath("//img[@id='nopup-picture']")[0].get('src'))
+    #like_url
+    like_url = (None)
+    for j in i.xpath("div[5]/div[2]/a"):
+        like_url = ("http://ask.fm" + j.get("href"))
     #like_count
     for j in i.xpath("div[5]/div[2]"):
         nodes = j.getchildren()
@@ -48,8 +52,7 @@ for i in tree.xpath("//div[@id='common_question_container']/div"):
             like_count = (None)
         else:
             like_count = (nodes[0].text.split(' ')[0])
-
-    tuple_holder.append((question, asked_by_who, answer, img_reply_bool, img_reply_src, like_count))
+    tuple_holder.append((question, asked_by_who, answer, img_reply_bool, img_reply_src, like_url, like_count))
 
 for i in tuple_holder:
     print("Question: " + i[0])
@@ -57,4 +60,5 @@ for i in tuple_holder:
     print("Answer: " + i[2])
     print("Is Image Reply?: " + str(i[3]))
     print("Image Source: " + str(i[4]))
-    print("Likes: " + str(i[5]))
+    print("Like URL: " + str(i[5]))
+    print("Like Count: " + str(i[6]))
