@@ -12,6 +12,7 @@ if(len(sys.argv)==0):
 
 username = sys.argv[1]
 dicts = getAnswers(username)
+#print(json.dumps(dicts,indent=4))
 for i in dicts:
     print("Question: " + i["question_text"])
     print("Asked By: " + i["asked_by_who"])
@@ -20,4 +21,4 @@ for i in dicts:
     print("Image Source: " + str(i["img_reply_src"]))
     print("Like URL: " + str(i["like_url"]))
     print("Like Count: " + str(i["like_count"]))
-    print("Like List:" + str(i["like_list"]))
+    print("Like List: " + str(i["like_list"]))

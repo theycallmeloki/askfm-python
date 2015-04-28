@@ -35,7 +35,14 @@ def getDP(tree):
     return tree.xpath("//*[@id='profile-picture']")[0].attrib["src"]
 
 def getBio(tree):
-    return tree.xpath("//*[@id='profile-bio']/div[1]/span")[0].text
+    bio_list = tree.xpath("//*[@id='profile-bio']/div[1]/span")
+    if(len(bio_list) > 0):
+        return bio_list[0].text
+
+def getWeb(tree):
+    web_list = tree.xpath("//*[@id='profile-bio']/div[2]/a")
+    if(len(web_list) > 0):
+        return web_list[0].text
 
 def getAnswerCount(tree):
     return tree.xpath("//*[@id='profile_answer_counter']")[0].text
@@ -85,20 +92,23 @@ def responseSorter(question):
         answer = ((' '.join(j.itertext()).strip()).encode('ascii', 'ignore').decode())
     #img_reply_bool
     for j in question.xpath("div[3]"):
-        nodes = j.getchildren()
+        nodes = j.xpath("a/span")
         img_reply = False
-        for k in nodes:
-            if(k.tag == 'a'):
-                img_reply = True
+        if(len(nodes) > 0):
+            for k in nodes[0]:
+                if(k.tag == 'img'):
+                    img_reply = True
         img_reply_bool = (img_reply)
     #img_reply_src
     for j in question.xpath("div[3]"):
-        nodes = j.getchildren()
-        img_reply_src = (None)
-        for k in nodes:
-            if(k.tag == 'a'):
-                imgTree = html.fromstring(requests.get("http://ask.fm" + k.get('href')).text)
-                img_reply_src = (imgTree.xpath("//img[@id='nopup-picture']")[0].get('src'))
+        if(img_reply_bool == False):
+            img_reply_src = (None)
+        else:
+            nodes = j.getchildren()
+            for k in nodes:
+                if(k.tag == 'a'):
+                    imgTree = html.fromstring(requests.get("http://ask.fm" + k.get('href')).text)
+                    img_reply_src = (imgTree.xpath("//img[@id='nopup-picture']")[0].get('src'))
     #like_url
     like_url = (None)
     for j in question.xpath("div[5]/div[2]/a"):
@@ -111,10 +121,9 @@ def responseSorter(question):
         else:
             like_count = (nodes[0].text.split(' ')[0])
     #like_list
-    like_list= (None)
+    like_list = (None)
     if(like_url != None):
         like_list = getUsernames(like_url)
-
     return_data = {
         "question_text":question_text,
         "asked_by_who":asked_by_who,
