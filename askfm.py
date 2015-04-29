@@ -79,8 +79,12 @@ def extractUsernames(like_tree):
 
 def responseSorter(question):
     #question_text
-    for j in question.xpath("div/span/span"):
-        question_text = ((" ".join(j.text.split('\n'))).encode('ascii', 'ignore').decode())
+    question_text = (None)
+    question_list = question.xpath("div/span/span")
+    for i in question_list:
+        for j in i.getchildren():
+            if(j.tag != 'a'):
+                question_text = ((" ".join(j.text.split('\n'))).encode('ascii', 'ignore').decode())
     #asked_by_who
     asked_by = question.find('div/span/a')
     if(asked_by == None):
