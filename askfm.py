@@ -120,10 +120,9 @@ def responseSorter(question):
         like_url = ("http://ask.fm" + j.get("href"))
     #like_count
     for j in question.xpath("div[5]/div[2]"):
+        like_count = (None)
         nodes = j.getchildren()
-        if(len(nodes) == 0):
-            like_count = (None)
-        else:
+        if(len(nodes) != 0):
             like_count = (nodes[0].text.split(' ')[0])
     #like_list
     like_list = (None)
