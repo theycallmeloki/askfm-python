@@ -111,8 +111,9 @@ def responseSorter(question):
             nodes = j.getchildren()
             for k in nodes:
                 if(k.tag == 'a'):
-                    imgTree = html.fromstring(requests.get("http://ask.fm" + k.get('href')).text)
-                    img_reply_src = (imgTree.xpath("//img[@id='nopup-picture']")[0].get('src'))
+                    if(len(k.getchildren()) > 0):
+                        imgTree = html.fromstring(requests.get("http://ask.fm" + k.get('href')).text)
+                        img_reply_src = (imgTree.xpath("//img[@id='nopup-picture']")[0].get('src'))
     #like_url
     like_url = (None)
     for j in question.xpath("div[5]/div[2]/a"):
