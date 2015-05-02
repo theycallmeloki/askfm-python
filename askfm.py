@@ -80,11 +80,11 @@ def extractUsernames(like_tree):
 def responseSorter(question):
     #question_text
     question_text = (None)
-    question_list = question.xpath("div/span/span")
+    question_list = question.xpath("div/span")
     for i in question_list:
         for j in i.getchildren():
-            if(j.tag != 'a'):
-                question_text = ((" ".join(j.text.split('\n'))).encode('ascii', 'ignore').decode())
+            if(j.tag == 'span'):
+                question_text = ((" ".join(str(j.text).split('\n'))).encode('ascii', 'ignore').decode())
     #asked_by_who
     asked_by = question.find('div/span/a')
     if(asked_by == None):
@@ -119,8 +119,8 @@ def responseSorter(question):
     for j in question.xpath("div[5]/div[2]/a"):
         like_url = ("http://ask.fm" + j.get("href"))
     #like_count
+    like_count = (None)
     for j in question.xpath("div[5]/div[2]"):
-        like_count = (None)
         nodes = j.getchildren()
         if(len(nodes) != 0):
             like_count = (nodes[0].text.split(' ')[0])
@@ -171,3 +171,17 @@ def getAnswers(username):
             dict_holder.append(responseSorter(i))
         next_page = int(re.search(r'\d+', re.search(r'val\(\d+\)', raw_post_result.text).group(0)).group(0))
     return dict_holder
+
+def getUser(username):
+    tree = getTree(username)
+    user = {}
+    user["username"] = username
+    user["fullname"] = getFullname(tree)
+    user["dp"] = getDP(tree)
+    user["bio"] = getBio(tree)
+    user["web"] = getWeb(tree)
+    user["user_answer_count"] = getAnswerCount(tree)
+    user["user_like_count"] = getLikeCount(tree)
+    user["user_gift_count"] = getGifts(tree)
+    user["answers"] = getAnswers(username)
+    return user

@@ -1,7 +1,7 @@
 #User
 list.txt
 __pycache__/
-sortuniq.py
+legacy/sortuniq.py
 
 # Windows image file caches
 Thumbs.db

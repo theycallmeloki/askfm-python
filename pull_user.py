@@ -12,16 +12,6 @@ if(len(sys.argv)==0):
     exit(0)
 
 username = sys.argv[1]
-tree = getTree(username)
-user = {}
-user["username"] = username
-user["fullname"] = getFullname(tree)
-user["dp"] = getDP(tree)
-user["bio"] = getBio(tree)
-user["web"] = getWeb(tree)
-user["user_answer_count"] = getAnswerCount(tree)
-user["user_like_count"] = getLikeCount(tree)
-user["user_gift_count"] = getGifts(tree)
-user["answers"] = getAnswers(username)
+user = getUser(username)
 
 print(json.dumps(user,sort_keys=True))
