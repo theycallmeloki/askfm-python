@@ -166,7 +166,8 @@ def getAnswers(username):
         if(raw_post_result.text == "$(\"#more-container\").hide();"):
             break
         js_post_result = re.search(r'after\("((?:[^"]+|\\")+)"\)', raw_post_result.text)
-        tree_next_page = html.fromstring(bytes(js_post_result.group(1), "utf-8").decode("unicode_escape"))
+
+        tree_next_page = html.fromstring(bytes(js_post_result.group(1)).decode("unicode_escape"))
         for i in tree_next_page[1]:
             dict_holder.append(responseSorter(i))
         next_page = int(re.search(r'\d+', re.search(r'val\(\d+\)', raw_post_result.text).group(0)).group(0))
