@@ -84,7 +84,7 @@ def responseSorter(question):
     for i in question_list:
         for j in i.getchildren():
             if(j.tag == 'span'):
-                question_text = ((" ".join(str(j.text).split('\n'))).encode('ascii', 'ignore').decode())
+                question_text = j.text
     #asked_by_who
     asked_by = question.find('div/span/a')
     if(asked_by == None):
