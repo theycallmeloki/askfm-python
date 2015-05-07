@@ -1,7 +1,7 @@
 askfm-python:
 ==============
 
-A python requests + lxml based client side library for Ask.fm.
+A python (3.x) requests + lxml based client side library for Ask.fm.
 
 FILES:
 ------
