@@ -19,6 +19,12 @@ def getTree(username):
     tree = html.fromstring((requests.get("http://ask.fm/" + username).text).encode('ascii', 'ignore').decode())
     return tree
 
+def isUserDeactivated(tree):
+    try:
+        return tree.xpath("//*[@id='kitten-image']/img")[0].get('src') == "/images/kittens/disabled.png"
+    except IndexError:
+        pass
+
 def getToken(tree):
     return tree.xpath("//*[@id='more-container']")[0].get("onsubmit").split("'")[3]
 
@@ -92,9 +98,11 @@ def responseSorter(question):
     else:
         asked_by_who = "@" + ((asked_by.get('href').lstrip('/')).encode('ascii', 'ignore').decode())
     #answer
+    answer = (None)
     for j in question.xpath("div[3]"):
         answer = ((' '.join(j.itertext()).strip()).encode('ascii', 'ignore').decode())
     #img_reply_bool
+    img_reply_bool = (None)
     for j in question.xpath("div[3]"):
         nodes = j.xpath("a/span")
         img_reply = False
@@ -104,6 +112,7 @@ def responseSorter(question):
                     img_reply = True
         img_reply_bool = (img_reply)
     #img_reply_src
+    img_reply_src = (None)
     for j in question.xpath("div[3]"):
         if(img_reply_bool == False):
             img_reply_src = (None)
@@ -174,14 +183,17 @@ def getAnswers(username):
 
 def getUser(username):
     tree = getTree(username)
-    user = {}
-    user["username"] = username
-    user["fullname"] = getFullname(tree)
-    user["dp"] = getDP(tree)
-    user["bio"] = getBio(tree)
-    user["web"] = getWeb(tree)
-    user["user_answer_count"] = getAnswerCount(tree)
-    user["user_like_count"] = getLikeCount(tree)
-    user["user_gift_count"] = getGifts(tree)
-    user["answers"] = getAnswers(username)
-    return user
+    if(isUserDeactivated(tree)):
+        return None
+    else:
+        user = {}
+        user["username"] = username
+        user["fullname"] = getFullname(tree)
+        user["dp"] = getDP(tree)
+        user["bio"] = getBio(tree)
+        user["web"] = getWeb(tree)
+        user["user_answer_count"] = getAnswerCount(tree)
+        user["user_like_count"] = getLikeCount(tree)
+        user["user_gift_count"] = getGifts(tree)
+        user["answers"] = getAnswers(username)
+        return user
