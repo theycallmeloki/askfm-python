@@ -137,7 +137,13 @@ def responseSorter(question):
     like_list = (None)
     if(like_url != None):
         like_list = getUsernames(like_url)
+
+    #answer_id
+    match = re.match('question_box_(\d{12})', question.get('id'))
+    answer_id = match.group(1)
+
     return_data = {
+        "answer_id":answer_id,
         "question_text":question_text,
         "asked_by_who":asked_by_who,
         "answer":answer,
@@ -147,6 +153,7 @@ def responseSorter(question):
         "like_count":like_count,
         "like_list":like_list
     }
+
     return return_data
 
 def getAnswers(username):
