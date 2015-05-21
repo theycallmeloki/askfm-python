@@ -160,7 +160,7 @@ def responseSorter(question):
 
     return return_data
 
-def getAnswers(username):
+def getAnswers(username, delay):
     dict_holder = []
     tree = getTree(username)
     for i in tree.xpath("//div[@class='questionBox']"):
