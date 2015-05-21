@@ -171,6 +171,9 @@ def getAnswers(username):
 
     next_page = -1
     while(True):
+        if delay > 0:
+            sleep(delay)
+
         token = getToken(tree)
         time = getTime(tree)
         if(next_page < 0):
@@ -192,7 +195,7 @@ def getAnswers(username):
         next_page = int(re.search(r'\d+', re.search(r'val\(\d+\)', raw_post_result.text).group(0)).group(0))
     return dict_holder
 
-def getUser(username):
+def getUser(username, delay=0):
     tree = getTree(username)
     if(isUserDeactivated(tree)):
         return None
@@ -206,5 +209,5 @@ def getUser(username):
         user["user_answer_count"] = getAnswerCount(tree)
         user["user_like_count"] = getLikeCount(tree)
         user["user_gift_count"] = getGifts(tree)
-        user["answers"] = getAnswers(username)
+        user["answers"] = getAnswers(username, delay)
         return user
