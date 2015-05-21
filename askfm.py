@@ -141,8 +141,10 @@ def responseSorter(question):
         like_list = getUsernames(like_url)
 
     #answer_id
+    answer_id = (None)
     match = re.match('question_box_(\d{12})', question.get('id'))
-    answer_id = match.group(1)
+    if match is not None:
+        answer_id = match.group(1)
 
     return_data = {
         "answer_id":answer_id,
