@@ -90,7 +90,9 @@ def responseSorter(question):
     for i in question_list:
         for j in i.getchildren():
             if(j.tag == 'span'):
-                question_text = j.text
+                text = j.text_content()
+                if text is not None and text != '':
+                    question_text = text.replace('\n', ' ').replace('\r', ' ')
     #asked_by_who
     asked_by = question.find('div/span/a')
     if(asked_by == None):
