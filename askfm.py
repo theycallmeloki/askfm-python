@@ -90,7 +90,9 @@ def responseSorter(question):
     for i in question_list:
         for j in i.getchildren():
             if(j.tag == 'span'):
-                question_text = j.text
+                text = j.text_content()
+                if text is not None and text != '':
+                    question_text = text.replace('\n', ' ').replace('\r', ' ')
     #asked_by_who
     asked_by = question.find('div/span/a')
     if(asked_by == None):
@@ -137,7 +139,15 @@ def responseSorter(question):
     like_list = (None)
     if(like_url != None):
         like_list = getUsernames(like_url)
+
+    #answer_id
+    answer_id = (None)
+    match = re.match('question_box_(\d{12})', question.get('id'))
+    if match is not None:
+        answer_id = match.group(1)
+
     return_data = {
+        "answer_id":answer_id,
         "question_text":question_text,
         "asked_by_who":asked_by_who,
         "answer":answer,
@@ -147,9 +157,10 @@ def responseSorter(question):
         "like_count":like_count,
         "like_list":like_list
     }
+
     return return_data
 
-def getAnswers(username):
+def getAnswers(username, delay):
     dict_holder = []
     tree = getTree(username)
     for i in tree.xpath("//div[@class='questionBox']"):
@@ -160,6 +171,9 @@ def getAnswers(username):
 
     next_page = -1
     while(True):
+        if delay > 0:
+            sleep(delay)
+
         token = getToken(tree)
         time = getTime(tree)
         if(next_page < 0):
@@ -181,7 +195,7 @@ def getAnswers(username):
         next_page = int(re.search(r'\d+', re.search(r'val\(\d+\)', raw_post_result.text).group(0)).group(0))
     return dict_holder
 
-def getUser(username):
+def getUser(username, delay=0):
     tree = getTree(username)
     if(isUserDeactivated(tree)):
         return None
@@ -195,5 +209,5 @@ def getUser(username):
         user["user_answer_count"] = getAnswerCount(tree)
         user["user_like_count"] = getLikeCount(tree)
         user["user_gift_count"] = getGifts(tree)
-        user["answers"] = getAnswers(username)
+        user["answers"] = getAnswers(username, delay)
         return user
