@@ -78,12 +78,16 @@ def getUsernames(like_url):
 
 def extractUsernames(like_tree):
     extract_list = []
-    for i in like_tree.xpath("//*[@id=\"wrapper\"]/div/div"):
-            for j in i.xpath("div/div[2]/span/span"):
-                extract_list.append(j.text)
+    for i in like_tree.xpath("//*[@id=\"wrapper\"]/div")[0].find_class('questionBox'):
+        extract_list.append(str(i.xpath('div/div/span')[0].text.strip()))
     return extract_list
 
 def responseSorter(question):
+    #question_id
+    question_id = (None)
+    qid = question.get('id').split('_')[2]
+    if(qid != ""):
+        question_id = qid
     #question_text
     question_text = (None)
     question_list = question.xpath("div/span")
@@ -138,6 +142,7 @@ def responseSorter(question):
     if(like_url != None):
         like_list = getUsernames(like_url)
     return_data = {
+        "question_id":question_id,
         "question_text":question_text,
         "asked_by_who":asked_by_who,
         "answer":answer,
